@@ -17,7 +17,7 @@ void setup() {
 }
 
 void loop() {
-  int val = digitalRead(9);
+  int val = digitalRead(8);
   int btn = digitalRead(5);
 
   MQ9.update();
