@@ -12,7 +12,7 @@ MQUnifiedsensor MQ9(Board, Voltage_Resolution, ADC_Bit_Resolution, Pin, Type);
 
 const String SSID = "JDG";
 const String PASSWORD = "12345678";
-const String SERVER_IP = "218.149.140.27";
+const String SERVER_IP = "121.147.52.117";
 const String SERVER_PORT = "8087";
 
 boolean sori = false;
@@ -28,12 +28,13 @@ String sendData = "";
 boolean FAIL_8266 = false;
 
 SoftwareSerial esp(2, 3); // TX, RX
-SoftwareSerial gps(4, 5);
+SoftwareSerial gps(5, 4);
 
 void setup() {
   Serial.begin(9600);
+  mqSetup();
+  
   gps.begin(9600);
-
   Serial.println("Start module connection");  // 출력
   do {
     esp.begin(9600);  // 와이파이 모듈
@@ -70,8 +71,6 @@ void setup() {
     }
   } while (FAIL_8266);
   Serial.println("Module connection complete");
-
-  mqSetup();
 }
 
 int sound_delay = 0;
@@ -97,6 +96,7 @@ void loop() {
   sound();
 
   if (gps.available()) {
+    Serial.print("들어왔다요");
     c = gps.read();
     if (c == '\n') {
       if (targetStr.equals(str.substring(1, 6))) {
@@ -114,10 +114,7 @@ void loop() {
         Serial.print("경도 : ");
         Serial.println(r_LongF, 15);
 
-        float LatF = (r_LatF, 15);
-        float LongF = (r_LongF, 15);
-
-        sendDataToServer();
+//        sendDataToServer();
       }
       str = "";
     } else {
@@ -129,7 +126,6 @@ void loop() {
 void sound() {
   if (sori) {
     sound_delay++;
-    Serial.println(sound_delay);
     if (sound_delay % 3 != 0) {
       tone(13, 1000, 1000);
     }
