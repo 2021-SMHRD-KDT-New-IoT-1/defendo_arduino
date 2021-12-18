@@ -16,39 +16,44 @@ void setup() {
   mqSetup();
 }
 
+int sound_delay = 0;
 void loop() {
-  int val = digitalRead(8);
-  int btn = digitalRead(5);
+  int attack = digitalRead(8);
+  int btn = digitalRead(6);
 
   MQ9.update();
   float LPG = getLPG();
   float CH4 = getCHfour();
   float CO = getCO();
-  Serial.print("LPG : "); Serial.println(LPG);
-  Serial.print("CH4 : "); Serial.println(CH4);
-  Serial.print("Co : "); Serial.println(CO);
-
-  Serial.print("val : "); Serial.println(val);
-  Serial.print("btn : "); Serial.println(btn);
-  Serial.println("------------------------------------------------------------------------");
-  delay(500);
-
-  if (sori == false) {
-    if (val == 1) {
-      sori = true;
-    }
+  
+  if (attack == 1) {
+    sori = true;
   }
-  else if(sori == true){
-    sound();
-    if(btn == 1){
-      sori == false;
-    }
+
+  if (LPG >= 1000 || CH4 >= 5000 || CO >= 7000) {
+    sori = true;
   }
+
+  if (btn == 1) {
+    sori = false;
+  }
+  sound();
 }
 
 void sound() {
-  tone(13, 1000, 1000);
-  delay(5000);
+  if (sori) {
+    sound_delay++;
+    Serial.println(sound_delay);
+    if (sound_delay % 3 != 0) {
+      tone(13, 1000, 1000);
+    }
+    else if (sound_delay % 3 == 0) {
+      noTone(13);
+    }
+  }
+  else if (!sori) {
+    noTone(13);
+  }
 }
 
 void mqSetup() {
