@@ -1,5 +1,6 @@
 #include <SoftwareSerial.h>
-SoftwareSerial gps(5, 4);
+
+SoftwareSerial gps(6, 5);
 
 char c = "";
 String str = "";
